@@ -151,8 +151,10 @@ impl HashBuilder {
     fn current_root(&self) -> B256 {
         if let Some(node_ref) = self.stack.last() {
             if node_ref.len() == B256::len_bytes() + 1 {
+                trace!(target: "trie::hash_builder", rlp = alloy_primitives::hex::encode(&node_ref[1..]), "root node rlp");
                 B256::from_slice(&node_ref[1..])
             } else {
+                trace!(target: "trie::hash_builder", rlp = alloy_primitives::hex::encode(node_ref), "root node rlp");
                 keccak256(node_ref)
             }
         } else {
