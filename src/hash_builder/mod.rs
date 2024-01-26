@@ -377,6 +377,14 @@ impl HashBuilder {
 
             if len == 0 {
                 n.root_hash = Some(self.current_root());
+
+                // compare with `Branchnode`'s `rlp` method
+                let node = BranchNode::new(self.stack.as_slice());
+                self.rlp_buf.clear();
+                let rlp = node.rlp(self.groups[len], &mut self.rlp_buf);
+                trace!(target: "trie::hash_builder", rlp = alloy_primitives::hex::encode(&rlp), "ROOT BRANCH NODE RLP");
+                let hash = keccak256(&rlp);
+                trace!(target: "trie::hash_builder", hash = alloy_primitives::hex::encode(hash), "ROOT BRANCH NODE HASH");
             }
 
             // Send it over to the provided channel which will handle it on the
