@@ -124,7 +124,9 @@ impl HashBuilder {
         if !self.key.is_empty() {
             self.update(&key);
         } else if key.is_empty() {
-            self.stack.push(word_rlp(&value));
+            let rlp = word_rlp(&value);
+            trace!(target: "trie::hash_builder", rlp = alloy_primitives::hex::encode(&rlp), "branch node rlp");
+            self.stack.push(rlp);
         }
         self.set_key_value(key, value);
         self.stored_in_database = stored_in_database;
@@ -251,7 +253,9 @@ impl HashBuilder {
                     }
                     HashBuilderValue::Hash(hash) => {
                         trace!(target: "trie::hash_builder", ?hash, "pushing branch node hash");
-                        self.stack.push(word_rlp(hash));
+                        let rlp = word_rlp(hash);
+                        trace!(target: "trie::hash_builder", rlp = alloy_primitives::hex::encode(&rlp), "pushing branch node rlp");
+                        self.stack.push(rlp);
 
                         if self.stored_in_database {
                             self.tree_masks[current.len() - 1] |=
